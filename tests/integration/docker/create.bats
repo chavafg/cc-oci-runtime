@@ -24,17 +24,7 @@
 setup() {
 	source test.common
 	cleanDockerPs
-	runtimeDocker
-}
-
-@test "Create a container" {
 	$DOCKER_EXE create -ti --name container1 busybox true
 	$DOCKER_EXE ps -a | grep "container1"
 }
 
-@test "Create network" {
-	$DOCKER_EXE network ls
-	$DOCKER_EXE network create -d bridge my-bridge-network
-	$DOCKER_EXE network ls | grep "my-bridge-network"
-	$DOCKER_EXE network rm my-bridge-network
-}
