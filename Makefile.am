@@ -108,7 +108,9 @@ CLEANFILES += $(GENERATED_FILES)
 AM_CPPFLAGS = -I $(top_srcdir)/src -DG_LOG_DOMAIN=\"$(PACKAGE_NAME)\" \
 	-DSYSCONFDIR=\"$(SYSCONFDIR)\" \
 	-DDEFAULTSDIR=\"$(DEFAULTSDIR)\" \
-	-DGIT_COMMIT=\"$(STORED_COMMIT)\"
+	-DLOCALSTATEDIR=\"$(localstatedir)\" \
+	-DGIT_COMMIT=\"$(STORED_COMMIT)\" \
+	-DLIBEXECDIR=\"$(libexecdir)\"
 
 defaultsdir = $(datadir)/defaults/$(PACKAGE_NAME)
 defaults_DATA = data/vm.json data/hypervisor.args data/kernel-cmdline
@@ -170,6 +172,7 @@ common_sources = \
 	src/oci-config.c src/oci-config.h \
 	src/hypervisor.c src/hypervisor.h \
 	src/json.c src/json.h \
+	src/proxy.c src/proxy.h \
 	src/spec_handler.c src/spec_handler.h \
 	src/common.h \
 	src/command.c src/command.h \
@@ -389,6 +392,7 @@ libtest_la_CFLAGS = \
 	$(JSON_GLIB_CFLAGS) \
 	$(LIBMNL_CFLAGS) \
 	$(UUID_CFLAGS) \
+	-DTEST_DATA_DIR=\"$(abs_srcdir)/tests/data\" \
 	-DUNIT_TESTING
 
 libtest_la_LIBS = \
@@ -425,6 +429,7 @@ TESTS = \
 	oci_config_test \
 	oci_test \
 	priv_test \
+	proxy_test \
 	process_test \
 	runtime_test \
 	semver_test \
@@ -432,6 +437,8 @@ TESTS = \
 	util_test \
 	mount_test \
 	annotation_test \
+	network_test \
+	spec_handler_test \
 	sh_annotations_test \
 	sh_linux_test \
 	sh_vm_test \
@@ -579,6 +586,17 @@ priv_test_CFLAGS = \
 priv_test_LDADD = \
 	$(TEST_COMMON_LDADD)
 
+## proxy.c test ##
+proxy_test_SOURCES = \
+	$(TEST_COMMON_SOURCES) \
+	tests/proxy_test.c
+
+proxy_test_CFLAGS = \
+	$(TEST_COMMON_CFLAGS)
+
+proxy_test_LDADD = \
+	$(TEST_COMMON_LDADD)
+
 ## mount.c test ##
 mount_test_SOURCES = \
 	$(TEST_COMMON_SOURCES) \
@@ -599,6 +617,28 @@ annotation_test_CFLAGS = \
 	$(TEST_COMMON_CFLAGS)
 
 annotation_test_LDADD = \
+	$(TEST_COMMON_LDADD)
+
+## network.c test ##
+network_test_SOURCES = \
+	$(TEST_COMMON_SOURCES) \
+	tests/network_test.c
+
+network_test_CFLAGS = \
+	$(TEST_COMMON_CFLAGS)
+
+network_test_LDADD = \
+	$(TEST_COMMON_LDADD)
+
+## spec_handler.c ##
+spec_handler_test_SOURCES = \
+	$(TEST_COMMON_SOURCES) \
+	tests/spec_handler_test.c
+
+spec_handler_test_CFLAGS = \
+	$(TEST_COMMON_CFLAGS)
+
+spec_handler_test_LDADD = \
 	$(TEST_COMMON_LDADD)
 
 ## spec_handlers/annotations.c test ##
